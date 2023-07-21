@@ -1,0 +1,10 @@
+Поздравляем!<br>
+Этот билет позволит вам попасть на мероприятие.<br><br>
+<b>{{ t.event_name }}</b><br>
+{% if t.event_desc %}{{ t.event_desc }}<br>{% endif %}
+{% if t.event_loc %}<b>Место: </b>{{ t.event_loc }}<br>{% endif %}
+{% if t.event_date %}<b>Время: </b>{{ t.event_date.strftime("%d.%m.%Y %H:%M") }}<br>{% endif %}
+<br><b>Тип билета: </b>{{ t.ticket_type_desc }}<br>
+<b>Стоимость: </b>{{ t.ticket_type_price }}₽<br><br>
+Покажите этот QR-код на входе.<br>
+До встречи)

@@ -1,0 +1,12 @@
+<b>История покупок</b><br><br>
+{% if ts|length ==0 %}Покупок нет
+{% else %}
+    {% for t in ts %}
+        {% if start_index is none %}◦{% else %}{{ start + loop.index }}.{% endif %}
+        {{ t.created_at.strftime("%d.%m.%Y") }} —
+        {{ t.ticket_type_desc }} ({{ t.ticket_type_price }}₽) —
+        (<pre>{{ t.event_name }}, {{ t.event_date.strftime("%d.%m.%Y") }}</pre>)
+        {% if t.event_date<expired %} — 🎟️ {% else %} ✔️ {% endif %}
+        {% if not t.valid %}❌{% endif %}<br><br>
+    {% endfor %}
+{% endif %}

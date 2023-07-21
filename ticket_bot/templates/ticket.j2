@@ -1,0 +1,10 @@
+Мероприятие: <b>{{ t.event_name }}</b><br>
+{% if t.event_loc %}<b>Место: </b>{{ t.event_loc }}<br>{% endif %}
+{% if t.event_date %}<b>Время: </b>{{ t.event_date.strftime("%d.%m.%Y %H:%M") }}<br>{% endif %}
+<br>Билет № <pre>{{ t.code }}</pre><br>
+<b>Тип билета: </b>{{ t.ticket_type_desc }}<br>
+<b>Стоимость: </b>{{ t.ticket_type_price }}₽<br>
+<b>Куплен: </b>{{ t.created_at.strftime("%d.%m.%Y %H:%M") }}<br>
+{% if not t.valid %}<b>❗❗❗НЕДЕЙСТВИТЕЛЕН❗❗❗</b>{% endif %}<br>
+Покажите этот QR-код на входе.<br>
+Билет исчезнет из бота после мероприятия.

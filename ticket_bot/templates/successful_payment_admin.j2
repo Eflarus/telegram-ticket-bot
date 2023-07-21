@@ -1,0 +1,3 @@
+<b>Новая покупка</b><br>
+{{ t.event_name }} - {{ t.ticket_type_desc }} - {{ t.ticket_type_price }}<br>
+{%  if t.username %} @{{ t.username }}{% else %}{{ t.user_id }}{% endif %} в {{ t.created_at.strftime("%d.%m.%Y %H:%M")}}

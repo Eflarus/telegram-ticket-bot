@@ -1,0 +1,12 @@
+<b>Статистика продажи билетов</b><br><br>
+{% if s|length ==0 %} Продаж нет
+{% else %}
+    Билет/Мероприятие/(Всего/Продано/Отменено)/(Стоимость/Выручка)/Можно ли купить<br><br>
+    {% for t in s %}
+        {{ t.id }}. <pre>{{ t.desc }} — {{ t.event_name }}  —
+        ({{ t.quantity }}/{{ t.sold_valid_tickets }}/{{ t.sold_invalid_tickets }}) —
+        ({{ t.price }}₽/{{ t.price*t.sold_valid_tickets }}₽) —
+        {% if t.is_sold_less_valid_tickets %} ✅ {% else %} ❌ {% endif %}
+        </pre><br><br>
+    {% endfor %}
+{% endif %}
