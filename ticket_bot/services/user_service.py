@@ -29,7 +29,6 @@ async def get_user_db(user: User | None) -> bool:
         "SELECT * FROM bot_user WHERE telegram_id = :telegram_id",
         {"telegram_id": user.id},
     )
-    print(user)
     if result is None:
         await insert_user_db(user)
     return True

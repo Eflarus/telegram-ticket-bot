@@ -1,3 +1,5 @@
+import os
+
 import telegram
 from telegram import Update, InputMedia
 from telegram.ext import ContextTypes
@@ -90,8 +92,7 @@ def _get_selected_event_index(query_data) -> int:
 
 async def _upload_poster_to_telegram(event: Event, context: ContextTypes.DEFAULT_TYPE):
     # sending the photo to discover its file_id:
-    poster_path = "images/posters/" + event.poster_file_name
-    print(poster_path)
+    poster_path = os.path.abspath(os.getcwd()) + "/ticket_bot/images/posters/" + event.poster_file_name
     photo = await context.bot.send_photo(chat_id=config.DEVELOPER_CHAT_ID, photo=open(poster_path, 'rb'))
     photo_fileID = photo.photo[-1].file_id
     await update_event_poster_id_db(event.id, poster_id=photo_fileID)

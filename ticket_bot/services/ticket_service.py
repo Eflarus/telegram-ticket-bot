@@ -22,7 +22,6 @@ async def add_ticket_db(ticket_type_id: int,
     new_ticket = await fetch_one("SELECT * FROM ticket WHERE id = last_insert_rowid()")
     if new_ticket is not None:
         ticket = Ticket(*new_ticket.values())
-        logging.info(query)
         return ticket
     else:
         return None
@@ -42,13 +41,11 @@ async def get_user_tickets_db(user_id: int, with_expired: bool = False) -> List[
     result = await fetch_all(query, {"user_id": user_id, "yesterday": yesterday})
     if result is not None:
         tickets = []
-        print(len(result))
         for ticket in result:
             ticket = Ticket(*ticket.values())
             ticket.event_date = dt.datetime.strptime(ticket.event_date, '%Y-%m-%d %H:%M:%S.%f')
             ticket.created_at = dt.datetime.strptime(ticket.created_at, '%Y-%m-%d %H:%M:%S')
             tickets.append(ticket)
-            print(ticket)
         return tickets
     else:
         return None

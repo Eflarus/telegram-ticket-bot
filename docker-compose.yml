@@ -1,0 +1,7 @@
+version: '3'
+services:
+  bot:
+    build: .
+    volumes:
+      - ./ticket_bot/db.sqlite3:/ticket-bot/ticket_bot/db.sqlite3
+      - ./ticket_bot/images/:/ticket-bot/ticket_bot/images/
