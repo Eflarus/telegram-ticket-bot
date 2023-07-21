@@ -36,7 +36,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
-
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 if not config.TELEGRAM_BOT_TOKEN or not config.PAYMENT_PROVIDER_TOKEN:
     raise ValueError(
@@ -78,16 +78,3 @@ if __name__ == "__main__":
         logger.warning(traceback.format_exc())
     finally:
         close_db()
-
-
-# bytes_io = BytesIO()
-#
-#     img = qrcode.make(message.text)
-#     img.save(bytes_io, format='PNG')
-#
-#     bytes_io.seek(0)
-#
-#     message.reply_photo(
-#         photo=bytes_io,
-#         reply_to_message_id=message.message_id,
-#     )
