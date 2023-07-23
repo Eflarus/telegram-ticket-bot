@@ -41,6 +41,7 @@ create table ticket (
   valid bool not null default true,
   deactivated_at timestamp default NULL,
   created_at timestamp default current_timestamp not null,
+  last_check_at timestamp default NULL,
   foreign key(ticket_type_id) references ticket_type(id),
   foreign key(bot_user_id) references bot_user(telegram_id)
 );

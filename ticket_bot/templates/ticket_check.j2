@@ -1,0 +1,8 @@
+{% if tc.valid %}🟩{% else %}🟥{{ tc.deactivated_at.strftime("%d.%m.%Y %H:%M:%S") }}{% endif %}
+{% if tc.last_check_at %} Проверен {{ tc.last_check_at.strftime("%d.%m.%Y %H:%M:%S") }}<br>{% else %} Еще не проверялся{% endif %}<br>
+{{ tc.event_name }} ({{ tc.event_date.strftime("%d.%m.%Y %H:%M") }})<br>
+{{ tc.ticket_type_desc }} - {{ tc.created_at.strftime("%d.%m.%Y %H:%M") }}<br><br>
+Куплен {% if tc.username %}@{{ tc.username }}{% endif %} {{ tc.name }} {{ tc.last_name }} за {{ tc.amount/100 }}р<br>
+<pre>{{ tc.code }}</pre>
+
+

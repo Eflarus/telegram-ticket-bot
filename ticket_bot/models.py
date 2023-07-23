@@ -39,6 +39,7 @@ class Ticket:
     valid: bool
     deactivated_at: datetime.datetime | None
     created_at: datetime.datetime
+    last_check_at: datetime.datetime | None
     ticket_type_desc: str | None = None
     ticket_type_price: int | None = None
     event_id: int | None = None
@@ -60,3 +61,23 @@ class TicketStat:
     is_sold_less_valid_tickets: bool
     sold_valid_tickets: int
     sold_invalid_tickets: int
+
+
+@dataclass
+class TicketCheck:
+    id: int
+    code: str
+    ticket_type_id: int
+    ticket_type_desc: str
+    amount: int
+    email: str | None
+    valid: bool
+    deactivated_at: datetime.datetime | None
+    created_at: datetime.datetime
+    last_check_at: datetime.datetime | None
+    event_name: str
+    event_date: datetime.datetime
+    user_id: int
+    username: str | None
+    name: str | None
+    last_name: str | None

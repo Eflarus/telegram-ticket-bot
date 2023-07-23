@@ -7,6 +7,7 @@ from .error import error_handler
 from .mytickets import show_my_tickets_handler, all_my_tickets_button
 from .story import story_handler
 from .ticket_stat import show_ticket_stat_handler
+from .check_qr import check_qr_handler
 __all__ = [
     "get_ticket",
     "start",
@@ -21,4 +22,5 @@ __all__ = [
     "all_my_tickets_button",
     "story_handler",
     "show_ticket_stat_handler",
+    "check_qr_handler",
 ]

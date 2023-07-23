@@ -1,9 +1,10 @@
 import datetime as dt
 import logging
+import string
 from typing import List
 
 from ticket_bot.db import fetch_all, execute, fetch_one
-from ticket_bot.models import Ticket
+from ticket_bot.models import Ticket, TicketCheck
 
 
 async def add_ticket_db(ticket_type_id: int,
@@ -69,11 +70,33 @@ async def get_ticket_db(ticket_id: int) -> Ticket | None:
         return None
 
 
-
 async def add_ticket_qr_db(ticket_id: int, qr_id: str) -> bool:
     query = "UPDATE ticket SET qr_id = :qr_id WHERE id = :id"
     result = await execute(query, {"qr_id": qr_id, "id": ticket_id})
     return result.rowcount > 0
+
+
+async def check_ticket_db(code: string) -> TicketCheck | None:
+    query = """SELECT t.id, t.code, tt.id AS ticket_type_id, tt.desc AS ticket_type_desc, t.amount, 
+                t.email, t.valid, t.deactivated_at, t.created_at, t.last_check_at,
+                e.name AS event_name, e.date AS event_date,
+                bu.telegram_id AS bot_user_id, bu.username, bu.name, bu.last_name  
+                FROM ticket t
+                JOIN ticket_type tt ON tt.id = t.ticket_type_id
+                JOIN event e ON e.id = tt.event_id
+                JOIN bot_user bu ON bu.telegram_id = t.bot_user_id
+                WHERE code = :code"""
+    result = await fetch_one(query, {"code": code})
+    if result is not None:
+        tc = TicketCheck(*result.values())
+        tc.event_date = dt.datetime.strptime(tc.event_date, '%Y-%m-%d %H:%M:%S.%f')
+        tc.created_at = dt.datetime.strptime(tc.created_at, '%Y-%m-%d %H:%M:%S')
+        tc.deactivated_at = dt.datetime.strptime(tc.deactivated_at, '%Y-%m-%d %H:%M:%S') if tc.deactivated_at else None
+        tc.last_check_at = dt.datetime.strptime(tc.last_check_at, '%Y-%m-%d %H:%M:%S') if tc.last_check_at else None
+        await execute("UPDATE ticket SET last_check_at = current_timestamp WHERE id = :id", {"id": tc.id})
+        return tc
+    else:
+        return None
 
 
 if __name__ == "__main__":

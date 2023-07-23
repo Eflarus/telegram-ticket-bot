@@ -11,7 +11,7 @@ from telegram.ext import (
 )
 
 from ticket_bot.db import close_db
-from ticket_bot.handlers import precheckout_handler, successful_payment_handler, error_handler
+from ticket_bot.handlers import precheckout_handler, successful_payment_handler, error_handler, check_qr_handler
 from ticket_bot.services.admin_service import get_admin_ids
 
 COMMAND_HANDLERS = {
@@ -21,7 +21,7 @@ COMMAND_HANDLERS = {
     "mytickets": handlers.show_my_tickets_handler,
     "story": handlers.story_handler,
     "stat": handlers.show_ticket_stat_handler,
-    }
+}
 
 CALLBACK_QUERY_HANDLERS = {
     rf"^{config.ALL_EVENTS_CALLBACK_PATTERN}(\d+)$": handlers.all_events_button,
@@ -29,7 +29,6 @@ CALLBACK_QUERY_HANDLERS = {
     rf"^{config.SELECT_TICKET_TYPE_CALLBACK_PATTERN}(\d+)$": handlers.get_ticket,
     rf"^{config.SELECT_TICKET_CALLBACK_PATTERN}(\d+)$": handlers.all_my_tickets_button,
 }
-
 
 # Enable logging
 logging.basicConfig(
@@ -56,13 +55,13 @@ def main() -> None:
     for pattern, handler in CALLBACK_QUERY_HANDLERS.items():
         application.add_handler(CallbackQueryHandler(handler, pattern=pattern))
 
-    # Pre-checkout handler to final check
+    # payment handlers
     application.add_handler(PreCheckoutQueryHandler(precheckout_handler))
+    application.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler))
 
-    # Success! Notify your user!
-    application.add_handler(
-        MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_handler)
-    )
+    application.add_handler(MessageHandler(filters.PHOTO & filters.Chat(config.ADMIN_IDS), check_qr_handler))
+
+    # error handler
     application.add_error_handler(error_handler)
 
     # Run the bot until the user presses Ctrl-C
