@@ -2,7 +2,7 @@ from typing import List
 
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
-from ticket_bot.models import Ticket, TicketType
+from ticket_bot.models import TicketType
 from ticket_bot.templates.strings import Strings as s
 
 
@@ -56,7 +56,7 @@ def get_tickets_keyboard(current_event_index: int,
                                   callback_data=f"{callback_ticket_prefix}{ticket_t.id}")] for ticket_t in ticket_types if ticket_t.is_sold_less_valid_tickets
         ]
     keyboard.append(
-        [InlineKeyboardButton(f"{s.BACK_TO_MENU}", callback_data=f"{callback_event_prefix}{current_event_index - 1}")])
+        [InlineKeyboardButton(f"{s.BACK_TO_MENU}", callback_data=f"{callback_event_prefix}{current_event_index}")])
     return InlineKeyboardMarkup(keyboard)
 
 

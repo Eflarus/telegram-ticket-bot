@@ -70,10 +70,11 @@ async def events_with_tickets_button(update: Update, _: ContextTypes.DEFAULT_TYP
     if not query.data or not query.data.strip():
         return
     selected_event_index = _get_selected_event_index(query.data)
-    event = await get_event_db(selected_event_index+1)
+    events = await get_all_events_db()
+    event = events[selected_event_index]
     ticket_types = await get_ticket_types_for_event_db(event.id)
     await query.edit_message_reply_markup(reply_markup=get_tickets_keyboard(
-        current_event_index=event.id,
+        current_event_index=selected_event_index,
         ticket_types=ticket_types,
         callback_ticket_prefix=config.SELECT_TICKET_TYPE_CALLBACK_PATTERN,
         callback_event_prefix=config.ALL_EVENTS_CALLBACK_PATTERN
