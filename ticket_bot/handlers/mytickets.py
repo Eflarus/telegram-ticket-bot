@@ -1,3 +1,6 @@
+from io import BytesIO
+
+import qrcode
 import telegram
 from telegram import Update, InputMedia
 from telegram.ext import ContextTypes
@@ -16,14 +19,22 @@ async def show_my_tickets_handler(update: Update, context: ContextTypes.DEFAULT_
         await send_text_response(update, context, response=s.NO_TICKETS_HERE)
         return
     ticket = user_tickets[0]
+    if ticket.qr_id is None:
+        bytes_io = BytesIO()
+        img = qrcode.make(ticket.code)
+        img.save(bytes_io)
+        bytes_io.seek(0)
+        qr = bytes_io
+    else:
+        qr = ticket.qr_id
     if len(user_tickets) == 1:
         await send_photo_response(update, context,
                                   response=render_template("ticket.j2", {"t": ticket}),
-                                  photo=ticket.qr_id)
+                                  photo=qr)
     else:
         await send_photo_response(update, context,
                                   response=render_template("ticket.j2", {"t": ticket}),
-                                  photo=ticket.qr_id,
+                                  photo=qr,
                                   keyboard=get_my_tickets_keyboard(
                                       current_ticket_index=0,
                                       tickets_count=len(user_tickets),
@@ -39,7 +50,15 @@ async def all_my_tickets_button(update: Update, context: ContextTypes.DEFAULT_TY
     user_tickets = await get_user_tickets_db(update.effective_user.id)
     current_ticket_index = _get_current_ticket_index(query.data)
     ticket = user_tickets[current_ticket_index]
-    await query.edit_message_media(media=InputMedia('photo', ticket.qr_id,
+    if ticket.qr_id is None:
+        bytes_io = BytesIO()
+        img = qrcode.make(ticket.code)
+        img.save(bytes_io)
+        bytes_io.seek(0)
+        qr = bytes_io
+    else:
+        qr = ticket.qr_id
+    await query.edit_message_media(media=InputMedia('photo', qr,
                                                     caption=render_template("ticket.j2", {"t": ticket}),
                                                     parse_mode=telegram.constants.ParseMode.HTML),
                                    reply_markup=get_my_tickets_keyboard(

@@ -53,7 +53,8 @@ async def get_user_tickets_db(user_id: int, with_expired: bool = False) -> List[
 
 
 async def get_ticket_db(ticket_id: int) -> Ticket | None:
-    query = """SELECT t.*, tt.desc, tt.price, e.id AS event_id, e.name as event_name, 
+    query = """SELECT t.*,
+                tt.desc, tt.price, e.id AS event_id, e.name as event_name, 
                     e.desc as event_desc, e.date as event_date, e.loc as event_loc, bu.username
                 FROM ticket t
                 JOIN ticket_type tt ON t.ticket_type_id = tt.id

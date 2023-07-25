@@ -1,4 +1,4 @@
 <b>{{ event.name }}</b><br>
-{% if event.desc %}{{ event.desc }}<br>{% endif %}
+{% if event.desc %}{{ event.desc|safe }}<br>{% endif %}
 {% if event.loc %}<b>Место: </b>{{ event.loc }}<br>{% endif %}
 {% if event.date %}<b>Время: </b>{{ event.date.strftime("%d.%m.%Y %H:%M") }}<br>{% endif %}

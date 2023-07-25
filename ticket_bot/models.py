@@ -39,7 +39,7 @@ class Ticket:
     valid: bool
     deactivated_at: datetime.datetime | None
     created_at: datetime.datetime
-    last_check_at: datetime.datetime | None
+    last_check_at: datetime.datetime | None = None
     ticket_type_desc: str | None = None
     ticket_type_price: int | None = None
     event_id: int | None = None
