@@ -5,4 +5,4 @@ services:
     volumes:
       - ./ticket_bot/db.sqlite3:/ticket-bot/ticket_bot/db.sqlite3
       - ./ticket_bot/images/:/ticket-bot/ticket_bot/images/
-      - ./bot.log:/ticket-bot/bot.log
+      - bot.log:/ticket-bot/bot.log
