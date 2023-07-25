@@ -3,6 +3,9 @@ import logging
 import string
 from typing import List
 
+import pytz
+
+from ticket_bot import config
 from ticket_bot.db import fetch_all, execute, fetch_one
 from ticket_bot.models import Ticket, TicketCheck
 
@@ -45,7 +48,7 @@ async def get_user_tickets_db(user_id: int, with_expired: bool = False) -> List[
         for ticket in result:
             ticket = Ticket(*ticket.values())
             ticket.event_date = dt.datetime.strptime(ticket.event_date, '%Y-%m-%d %H:%M:%S.%f')
-            ticket.created_at = dt.datetime.strptime(ticket.created_at, '%Y-%m-%d %H:%M:%S')
+            ticket.created_at = utc_to_time(dt.datetime.strptime(ticket.created_at, '%Y-%m-%d %H:%M:%S'))
             tickets.append(ticket)
         return tickets
     else:
@@ -65,7 +68,7 @@ async def get_ticket_db(ticket_id: int) -> Ticket | None:
     if result is not None:
         ticket = Ticket(*result.values())
         ticket.event_date = dt.datetime.strptime(ticket.event_date, '%Y-%m-%d %H:%M:%S.%f')
-        ticket.created_at = dt.datetime.strptime(ticket.created_at, '%Y-%m-%d %H:%M:%S')
+        ticket.created_at = utc_to_time(dt.datetime.strptime(ticket.created_at, '%Y-%m-%d %H:%M:%S'))
         return ticket
     else:
         return None
@@ -91,13 +94,17 @@ async def check_ticket_db(code: string) -> TicketCheck | None:
     if result is not None:
         tc = TicketCheck(*result.values())
         tc.event_date = dt.datetime.strptime(tc.event_date, '%Y-%m-%d %H:%M:%S.%f')
-        tc.created_at = dt.datetime.strptime(tc.created_at, '%Y-%m-%d %H:%M:%S')
-        tc.deactivated_at = dt.datetime.strptime(tc.deactivated_at, '%Y-%m-%d %H:%M:%S') if tc.deactivated_at else None
-        tc.last_check_at = dt.datetime.strptime(tc.last_check_at, '%Y-%m-%d %H:%M:%S') if tc.last_check_at else None
+        tc.created_at = utc_to_time(dt.datetime.strptime(tc.created_at, '%Y-%m-%d %H:%M:%S'))
+        tc.deactivated_at = utc_to_time(dt.datetime.strptime(tc.deactivated_at, '%Y-%m-%d %H:%M:%S')) if tc.deactivated_at else None
+        tc.last_check_at = utc_to_time(dt.datetime.strptime(tc.last_check_at, '%Y-%m-%d %H:%M:%S')) if tc.last_check_at else None
         await execute("UPDATE ticket SET last_check_at = current_timestamp WHERE id = :id", {"id": tc.id})
         return tc
     else:
         return None
+
+
+def utc_to_time(naive, timezone=config.TZ):
+    return naive.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone))
 
 
 if __name__ == "__main__":

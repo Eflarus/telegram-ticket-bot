@@ -31,3 +31,4 @@ SELECT_TICKET_CALLBACK_PATTERN = "ticket_"
 EVENT_START = "events"
 
 LOG_FILE_NAME = "bot.log"
+TZ = "Europe/Moscow"
