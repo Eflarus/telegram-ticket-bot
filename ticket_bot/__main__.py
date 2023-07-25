@@ -52,6 +52,9 @@ def main() -> None:
     defaults = Defaults(parse_mode=ParseMode.HTML, tzinfo=pytz.timezone('Europe/Moscow'))
     application = ApplicationBuilder().token(config.TELEGRAM_BOT_TOKEN).defaults(defaults).build()
 
+    application.add_handler(
+        CommandHandler("start", handlers.get_event, filters.Regex(config.EVENT_START))
+    )
     for command_name, command_handler in COMMAND_HANDLERS.items():
         application.add_handler(CommandHandler(command_name, command_handler))
 
